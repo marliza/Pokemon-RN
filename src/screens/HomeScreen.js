@@ -1,51 +1,23 @@
 import React, {Component} from 'react';
 import {Navigation} from 'react-native-navigation';
-
+import {connect} from 'react-redux';
 import {Text, StyleSheet, TouchableHighlight} from 'react-native';
 import {FlatGrid} from 'react-native-super-grid';
+import {fetchPokemonList} from '../actions/PokemonActions';
+import * as CONSTANT from '../Constants';
 
 class HomeScreen extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: false,
-      data: [],
-      page: 1,
-      error: null,
-    };
-  }
-
   componentDidMount() {
     // fetch the initial list of pokemons
-    this.fetchPokemonList();
+    const url = CONSTANT.BASE_URL + CONSTANT.ENDPOINT;
+    this.props.fetchPokemonList(url);
   }
-
-  fetchPokemonList = () => {
-    const url = 'https://pokeapi.co/api/v2/pokemon';
-    this.setState({loading: true});
-
-    // make api call to get the pokemon list
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        console.log(res.results);
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-      })
-      .catch(error => {
-        this.setState({error, loading: false});
-      });
-  };
 
   render() {
     return (
       <FlatGrid
         itemDimension={100}
-        data={this.state.data}
+        data={this.props.pokemonList}
         style={styles.gridView}
         spacing={10}
         renderItem={({item}) => (
@@ -75,16 +47,6 @@ class HomeScreen extends Component {
   }
 }
 
-// navigation bar
-HomeScreen.options = {
-  topBar: {
-    title: {
-      text: 'Pokemon',
-      color: 'white',
-    },
-  },
-};
-
 const styles = StyleSheet.create({
   gridView: {
     marginTop: 10,
@@ -105,4 +67,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+const mapStateToProps = ({pokemonData}) => {
+  const {pokemonList, error, isFetching} = pokemonData;
+  return {
+    pokemonList,
+    error,
+    isFetching,
+  };
+};
+
+export default connect(mapStateToProps, {fetchPokemonList})(HomeScreen);
