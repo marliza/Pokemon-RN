@@ -1,7 +1,13 @@
 import React, {Component} from 'react';
 import {Navigation} from 'react-native-navigation';
 import {connect} from 'react-redux';
-import {Text, StyleSheet, TouchableHighlight} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Image,
+  View,
+} from 'react-native';
 import {FlatGrid} from 'react-native-super-grid';
 import {fetchPokemonList} from '../actions/PokemonActions';
 import * as CONSTANT from '../Constants';
@@ -21,9 +27,7 @@ class HomeScreen extends Component {
         style={styles.gridView}
         spacing={10}
         renderItem={({item}) => (
-          <TouchableHighlight
-            underlayColor="transparent"
-            style={styles.itemContainer}
+          <TouchableWithoutFeedback
             onPress={() =>
               Navigation.push(this.props.componentId, {
                 component: {
@@ -39,8 +43,16 @@ class HomeScreen extends Component {
                 },
               })
             }>
-            <Text style={styles.itemName}>{item.name}</Text>
-          </TouchableHighlight>
+            <View style={styles.content}>
+              <Image
+                source={{
+                  uri: item.sprites.front_default,
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.itemName}>{item.name}</Text>
+            </View>
+          </TouchableWithoutFeedback>
         )}
       />
     );
@@ -52,18 +64,26 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
   },
-  itemContainer: {
-    justifyContent: 'flex-end',
-    borderRadius: 5,
-    padding: 10,
-    height: 150,
+  content: {
     backgroundColor: '#50A9B1',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#50A9B1',
+  },
+  image: {
+    height: 90,
+    width: 115,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    alignSelf: 'center',
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#fff',
     fontWeight: '600',
     alignSelf: 'center',
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 });
 
