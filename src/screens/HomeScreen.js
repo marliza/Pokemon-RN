@@ -29,16 +29,12 @@ class HomeScreen extends Component {
         renderItem={({item}) => (
           <TouchableWithoutFeedback
             onPress={() =>
-              Navigation.push(this.props.componentId, {
+              Navigation.showModal({
+                animationType: 'slide-up',
                 component: {
                   name: 'Detail', // Push the screen registered with the 'Detail' key
-                  options: {
-                    // Optional options object to configure the screen
-                    topBar: {
-                      title: {
-                        text: 'DetailScreen', // Set the TopBar title of the new Screen
-                      },
-                    },
+                  passProps: {
+                    data: item,
                   },
                 },
               })
