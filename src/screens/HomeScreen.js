@@ -13,6 +13,7 @@ import {fetchPokemonList} from '../actions/PokemonActions';
 import * as CONSTANT from '../Constants';
 import {Colors} from '../styles/colors';
 import {Fonts} from '../styles/fonts';
+import {Spinner} from '../components/Spinner';
 
 class HomeScreen extends Component {
   componentDidMount() {
@@ -22,38 +23,42 @@ class HomeScreen extends Component {
   }
 
   render() {
-    return (
-      <FlatGrid
-        itemDimension={100}
-        data={this.props.pokemonList}
-        style={styles.gridView}
-        spacing={10}
-        renderItem={({item}) => (
-          <TouchableWithoutFeedback
-            onPress={() =>
-              Navigation.showModal({
-                animationType: 'slide-up',
-                component: {
-                  name: 'Detail', // Push the screen registered with the 'Detail' key
-                  passProps: {
-                    data: item,
+    if (this.props.isFetching) {
+      return <Spinner size="large" />;
+    } else {
+      return (
+        <FlatGrid
+          itemDimension={100}
+          data={this.props.pokemonList}
+          style={styles.gridView}
+          spacing={10}
+          renderItem={({item}) => (
+            <TouchableWithoutFeedback
+              onPress={() =>
+                Navigation.showModal({
+                  animationType: 'slide-up',
+                  component: {
+                    name: 'Detail', // Push the screen registered with the 'Detail' key
+                    passProps: {
+                      data: item,
+                    },
                   },
-                },
-              })
-            }>
-            <View style={styles.content}>
-              <Image
-                source={{
-                  uri: item.sprites.front_default,
-                }}
-                style={styles.image}
-              />
-              <Text style={styles.itemName}>{item.name}</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        )}
-      />
-    );
+                })
+              }>
+              <View style={styles.content}>
+                <Image
+                  source={{
+                    uri: item.sprites.front_default,
+                  }}
+                  style={styles.image}
+                />
+                <Text style={styles.itemName}>{item.name}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
+        />
+      );
+    }
   }
 }
 
