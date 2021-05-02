@@ -1,5 +1,7 @@
 import {Navigation} from 'react-native-navigation';
 import {registerScreens} from './src/config/navigation';
+import {Colors} from './src/styles/colors';
+import {Fonts} from './src/styles/fonts';
 
 Navigation.events().registerAppLaunchedListener(async () => {
   registerScreens();
@@ -32,13 +34,15 @@ Navigation.events().registerAppLaunchedListener(async () => {
 Navigation.setDefaultOptions({
   topBar: {
     title: {
-      color: 'white',
+      color: Colors.white,
+      fontFamily: Fonts.title,
+      fontSize: 28,
     },
     backButton: {
-      color: 'white',
+      color: Colors.white,
     },
     background: {
-      color: '#50A9B1',
+      color: Colors.easternBlue,
     },
   },
 });

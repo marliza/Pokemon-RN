@@ -11,6 +11,8 @@ import {
 import {FlatGrid} from 'react-native-super-grid';
 import {fetchPokemonList} from '../actions/PokemonActions';
 import * as CONSTANT from '../Constants';
+import {Colors} from '../styles/colors';
+import {Fonts} from '../styles/fonts';
 
 class HomeScreen extends Component {
   componentDidMount() {
@@ -61,25 +63,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    backgroundColor: '#50A9B1',
+    backgroundColor: Colors.easternBlue,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#50A9B1',
+    borderColor: Colors.easternBlue,
   },
   image: {
     height: 90,
     width: 115,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     borderRadius: 5,
     alignSelf: 'center',
   },
   itemName: {
     fontSize: 18,
-    color: '#fff',
+    textTransform: 'capitalize',
+    color: Colors.white,
     fontWeight: '600',
     alignSelf: 'center',
     paddingTop: 5,
     paddingBottom: 5,
+    fontFamily: Fonts.text,
   },
 });
 
