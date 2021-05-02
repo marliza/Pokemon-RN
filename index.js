@@ -2,6 +2,7 @@ import {Navigation} from 'react-native-navigation';
 import {registerScreens} from './src/config/navigation';
 import {Colors} from './src/styles/colors';
 import {Fonts} from './src/styles/fonts';
+import * as CONSTANT from './src/Constants';
 
 Navigation.events().registerAppLaunchedListener(async () => {
   registerScreens();
@@ -17,9 +18,13 @@ Navigation.events().registerAppLaunchedListener(async () => {
               options: {
                 topBar: {
                   title: {
-                    text: 'Pokemon',
-                    color: 'white',
+                    text: CONSTANT.APP_TITLE,
+                    color: Colors.white,
                   },
+                  searchBar: true,
+                  searchBarBackgroundColor: Colors.white,
+                  searchBarTintColor: Colors.white,
+                  searchBarPlaceholder: CONSTANT.SEARCHBAR_PLACEHOLDER,
                 },
               },
             },
