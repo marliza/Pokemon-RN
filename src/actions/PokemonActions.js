@@ -7,14 +7,18 @@ export const search = searchTerm => {
 };
 
 export const fetchPokemonList = url => {
-  return dispatch => {
+  return (dispatch, getState) => {
+    const state = getState();
+
     fetchInProgress(dispatch);
     var pokemonList = [];
+    var nextURL = '';
     // make api call to get the pokemon list
     fetch(url)
       .then(res => res.json())
       .then(res => {
         pokemonList = res.results;
+        nextURL = res.next;
       })
       .then(() => {
         var pokemonDetailArray = [];
@@ -28,7 +32,20 @@ export const fetchPokemonList = url => {
                 // dispatch success at the end of the iteration
                 if (pokemonDetailArray.length === array.length) {
                   resolve(pokemonDetailArray);
-                  fetchPokemonListSuccess(dispatch, pokemonDetailArray);
+                  if (state.pokemonData.pokemonList.length === 0) {
+                    fetchPokemonListSuccess(
+                      dispatch,
+                      nextURL,
+                      pokemonDetailArray,
+                    );
+                  } else {
+                    fetchPokemonListSuccess(
+                      dispatch,
+                      nextURL,
+                      pokemonDetailArray,
+                      state.pokemonData.pokemonList,
+                    );
+                  }
                 }
               })
               .catch(error => {
@@ -56,10 +73,12 @@ const fetchPokemonFail = dispatch => {
   });
 };
 
-const fetchPokemonListSuccess = (dispatch, pokemonList) => {
+const fetchPokemonListSuccess = (dispatch, nextURL, newData, initialData) => {
   dispatch({
     type: FETCH_SUCCESS,
-    payload: pokemonList,
+    newData: newData,
+    initialData: initialData,
+    nextURL: nextURL,
   });
 };
 

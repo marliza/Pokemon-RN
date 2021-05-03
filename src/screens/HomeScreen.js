@@ -29,21 +29,46 @@ class HomeScreen extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.dataToDisplay !== nextProps.dataToDisplay) {
+      return true;
+    }
+    return false;
+  }
+
   // searchBarUpdated called on text is updated
   searchBarUpdated({text, isFocused}) {
     this.props.search(text);
   }
 
   render() {
+    const isCloseToBottom = ({
+      layoutMeasurement,
+      contentOffset,
+      contentSize,
+    }) => {
+      return (
+        layoutMeasurement.height + contentOffset.y >= contentSize.height - 1
+      );
+    };
+
     if (this.props.isFetching) {
       return <Spinner size="large" />;
     } else {
       return (
         <FlatGrid
           itemDimension={100}
-          data={this.props.searchData}
+          data={this.props.dataToDisplay}
           style={styles.gridView}
           spacing={10}
+          onScroll={({nativeEvent}) => {
+            if (isCloseToBottom(nativeEvent)) {
+              if (!this.props.isFetching) {
+                this.props.fetchPokemonList(this.props.nextURL);
+              }
+            }
+          }}
+          scrollEventThrottle={1000}
           renderItem={({item}) => (
             <TouchableWithoutFeedback
               onPress={() =>
@@ -68,6 +93,7 @@ class HomeScreen extends Component {
               </View>
             </TouchableWithoutFeedback>
           )}
+          ListFooterComponent={<Spinner size="large" />}
         />
       );
     }
@@ -111,12 +137,13 @@ const filterSelector = (pokemonList, searchTerm) => {
 };
 
 const mapStateToProps = ({pokemonData}) => {
-  const {pokemonList, error, isFetching, searchTerm} = pokemonData;
-  const searchData = filterSelector(pokemonList, searchTerm);
+  const {pokemonList, error, isFetching, searchTerm, nextURL} = pokemonData;
+  const dataToDisplay = filterSelector(pokemonList, searchTerm);
   return {
-    searchData,
+    dataToDisplay,
     error,
     isFetching,
+    nextURL,
   };
 };
 

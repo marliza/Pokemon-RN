@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   error: false,
   isFetching: false,
   searchTerm: '',
+  nextURL: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -17,7 +18,23 @@ export default (state = INITIAL_STATE, action) => {
     case FETCH_IN_PROGRESS:
       return {...state, isFetching: true};
     case FETCH_SUCCESS:
-      return {...state, isFetching: false, pokemonList: action.payload};
+      if (action.initialData == null) {
+        return {
+          ...state,
+          isFetching: false,
+          pokemonList: action.newData,
+          nextURL: action.nextURL,
+        };
+      } else {
+        let allPokemon = [];
+        allPokemon = action.initialData.concat(action.newData);
+        return {
+          ...state,
+          isFetching: false,
+          pokemonList: allPokemon,
+          nextURL: action.nextURL,
+        };
+      }
     case FETCH_FAIL:
       return {
         ...state,
