@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import {FlatGrid} from 'react-native-super-grid';
-import {fetchPokemonList} from '../actions/PokemonActions';
+import {fetchPokemonList, search} from '../actions/PokemonActions';
 import * as CONSTANT from '../Constants';
 import {Colors} from '../styles/colors';
 import {Fonts} from '../styles/fonts';
@@ -17,9 +17,21 @@ import {Spinner} from '../components/Spinner';
 
 class HomeScreen extends Component {
   componentDidMount() {
+    this.navigationEventListener = Navigation.events().bindComponent(this);
+
     // fetch the initial list of pokemons
     const url = CONSTANT.BASE_URL + CONSTANT.ENDPOINT;
     this.props.fetchPokemonList(url);
+  }
+  componentWillUnmount() {
+    if (this.navigationEventListener) {
+      this.navigationEventListener.remove();
+    }
+  }
+
+  // searchBarUpdated called on text is updated
+  searchBarUpdated({text, isFocused}) {
+    this.props.search(text);
   }
 
   render() {
@@ -29,7 +41,7 @@ class HomeScreen extends Component {
       return (
         <FlatGrid
           itemDimension={100}
-          data={this.props.pokemonList}
+          data={this.props.searchData}
           style={styles.gridView}
           spacing={10}
           renderItem={({item}) => (
@@ -91,14 +103,21 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.text,
   },
 });
+const filterSelector = (pokemonList, searchTerm) => {
+  const filteredArray = pokemonList.filter(pokemon =>
+    pokemon.name.includes(searchTerm.toLowerCase()),
+  );
+  return filteredArray;
+};
 
 const mapStateToProps = ({pokemonData}) => {
-  const {pokemonList, error, isFetching} = pokemonData;
+  const {pokemonList, error, isFetching, searchTerm} = pokemonData;
+  const searchData = filterSelector(pokemonList, searchTerm);
   return {
-    pokemonList,
+    searchData,
     error,
     isFetching,
   };
 };
 
-export default connect(mapStateToProps, {fetchPokemonList})(HomeScreen);
+export default connect(mapStateToProps, {fetchPokemonList, search})(HomeScreen);

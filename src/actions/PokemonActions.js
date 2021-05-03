@@ -1,4 +1,10 @@
-import {FETCH_SUCCESS, FETCH_FAIL, FETCH_IN_PROGRESS} from './types';
+import {FETCH_SUCCESS, FETCH_FAIL, FETCH_IN_PROGRESS, SEARCH} from './types';
+
+export const search = searchTerm => {
+  return dispatch => {
+    searchPokemonList(dispatch, searchTerm);
+  };
+};
 
 export const fetchPokemonList = url => {
   return dispatch => {
@@ -54,5 +60,12 @@ const fetchPokemonListSuccess = (dispatch, pokemonList) => {
   dispatch({
     type: FETCH_SUCCESS,
     payload: pokemonList,
+  });
+};
+
+const searchPokemonList = (dispatch, searchTerm) => {
+  dispatch({
+    type: SEARCH,
+    searchTerm: searchTerm,
   });
 };

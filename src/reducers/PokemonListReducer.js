@@ -1,9 +1,15 @@
-import {FETCH_SUCCESS, FETCH_FAIL, FETCH_IN_PROGRESS} from '../actions/types';
+import {
+  FETCH_SUCCESS,
+  FETCH_FAIL,
+  FETCH_IN_PROGRESS,
+  SEARCH,
+} from '../actions/types';
 
 const INITIAL_STATE = {
   pokemonList: [],
   error: false,
   isFetching: false,
+  searchTerm: '',
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -18,6 +24,9 @@ export default (state = INITIAL_STATE, action) => {
         isFetching: false,
         error: true,
       };
+    case SEARCH:
+      const searchTerm = action.searchTerm;
+      return {...state, searchTerm};
     default:
       return state;
   }
