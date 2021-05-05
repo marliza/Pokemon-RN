@@ -16,6 +16,8 @@ import {Fonts} from '../styles/fonts';
 import {Spinner} from '../components/Spinner';
 
 class HomeScreen extends Component {
+var isSearching = false;
+
   componentDidMount() {
     this.navigationEventListener = Navigation.events().bindComponent(this);
 
@@ -37,7 +39,8 @@ class HomeScreen extends Component {
   }
 
   // searchBarUpdated called on text is updated
-  searchBarUpdated({text, isFocused}) {
+  searchBarUpdated({text}) {
+    isSearching = text !== '' ? true : false;
     this.props.search(text);
   }
 
@@ -61,9 +64,11 @@ class HomeScreen extends Component {
           data={this.props.dataToDisplay}
           style={styles.gridView}
           spacing={10}
+          initialNumToRender={15}
           onScroll={({nativeEvent}) => {
             if (isCloseToBottom(nativeEvent)) {
-              if (!this.props.isFetching) {
+              if (!this.props.isFetching && !isSearching) {
+                console.log(this.props.nextURL);
                 this.props.fetchPokemonList(this.props.nextURL);
               }
             }
@@ -93,7 +98,12 @@ class HomeScreen extends Component {
               </View>
             </TouchableWithoutFeedback>
           )}
-          ListFooterComponent={<Spinner size="large" />}
+          ListFooterComponent={() => {
+            if (!isSearching) {
+              return <Spinner size="large" />;
+            }
+            return null;
+          }}
         />
       );
     }
