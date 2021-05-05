@@ -15,9 +15,9 @@ import {Colors} from '../styles/colors';
 import {Fonts} from '../styles/fonts';
 import {Spinner} from '../components/Spinner';
 
-class HomeScreen extends Component {
 var isSearching = false;
 
+class HomeScreen extends Component {
   componentDidMount() {
     this.navigationEventListener = Navigation.events().bindComponent(this);
 
